@@ -1,13 +1,12 @@
-package com.thebigscale.tinker
+package com.thebigscale.tinker.producers
 
 import java.util.Properties
 
-import org.apache.kafka.clients.producer._
+import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord, RecordMetadata}
 import org.apache.kafka.common.serialization.StringSerializer
 import org.slf4j.LoggerFactory
 
-
-object SimpleProducerWithKey extends App {
+object SimpleProducerWithCallback extends App {
 
   val log = LoggerFactory.getLogger(this.getClass)
 
@@ -23,7 +22,7 @@ object SimpleProducerWithKey extends App {
 
   for (i <- 1 to 10) {
     //Create producer record
-    val producerRecord = new ProducerRecord[String, String]("test_topic_1", "key_1", s"222 with get goes to same partition $i")
+    val producerRecord = new ProducerRecord[String, String]("test_topic_1", s"Hello kafka World $i")
     //Send record
     kafkaProducer.send(producerRecord,(metadata: RecordMetadata, exception: Exception) =>
       if (exception == null) {
@@ -31,7 +30,7 @@ object SimpleProducerWithKey extends App {
       } else {
         log.error("Exception occurred while sending message",  exception)
       }
-    ).get()
+    )
   }
 
 
